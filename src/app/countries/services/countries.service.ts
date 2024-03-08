@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, of } from 'rxjs';
 import { Country } from '../interfaces/country.interface';
+import { typeZone } from './zone.enum';
 
 @Injectable({ providedIn: 'root' })
 export class CountriesService {
@@ -34,6 +35,15 @@ export class CountriesService {
 
   searchRegion( regionName: string ): Observable<Country[]> {
     const url: string = `${ this.apiUrl }/region/${ regionName }`;
+
+    return this.http.get<Country[]>(url)
+      .pipe(
+        catchError( () => of([]) )
+      );
+  }
+
+  searchBy( term: string, typeZone:string ): Observable<Country[]> {
+    const url: string = `${ this.apiUrl }/${ typeZone }/${ term }`;
 
     return this.http.get<Country[]>(url)
       .pipe(
