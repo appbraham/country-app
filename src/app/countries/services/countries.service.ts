@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, of } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 import { Country } from '../interfaces/country.interface';
 import { typeZone } from './zone.enum';
 
@@ -11,43 +11,54 @@ export class CountriesService {
 
   constructor(private http: HttpClient) { }
 
+  searchCountryByAlphaCode(code: string): Observable<Country | null> {
 
-  searchCapital( term: string ): Observable<Country[]> {
+    const url: string = `${this.apiUrl}/alpha/${code}`;
+    return this.http.get<Country[]>(url)
+      .pipe(
+        map(countries => countries.length > 0 ? countries[0] : null),
+        catchError(() => of(null))
+      );
 
-    const url: string = `${ this.apiUrl }/capital/${ term }`;
+  }
+
+
+  searchCapital(term: string): Observable<Country[]> {
+
+    const url: string = `${this.apiUrl}/capital/${term}`;
 
     return this.http.get<Country[]>(url)
       .pipe(
         //Retorna un observable vacío
-        catchError( () => of([]))
+        catchError(() => of([]))
         // catchError( error => of([]))
       );
   }
 
-  searchCountry( countryName: string ): Observable<Country[]>{
-    const url: string = `${ this.apiUrl }/name/${ countryName }`;
+  searchCountry(countryName: string): Observable<Country[]> {
+    const url: string = `${this.apiUrl}/name/${countryName}`;
 
     return this.http.get<Country[]>(url)
       .pipe(
-        catchError( () => of([]))
+        catchError(() => of([]))
       );
   }
 
-  searchRegion( regionName: string ): Observable<Country[]> {
-    const url: string = `${ this.apiUrl }/region/${ regionName }`;
+  searchRegion(regionName: string): Observable<Country[]> {
+    const url: string = `${this.apiUrl}/region/${regionName}`;
 
     return this.http.get<Country[]>(url)
       .pipe(
-        catchError( () => of([]) )
+        catchError(() => of([]))
       );
   }
 
-  searchBy( term: string, typeZone:string ): Observable<Country[]> {
-    const url: string = `${ this.apiUrl }/${ typeZone }/${ term }`;
+  searchBy(term: string, typeZone: string): Observable<Country[]> {
+    const url: string = `${this.apiUrl}/${typeZone}/${term}`;
 
     return this.http.get<Country[]>(url)
       .pipe(
-        catchError( () => of([]) )
+        catchError(() => of([]))
       );
   }
 
