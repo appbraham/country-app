@@ -2,12 +2,15 @@
 <hr>
 
 <div class="row">
-  <div class="col">
+  <div class="col d-flex flex-wrap gap-4 justify-content-center">
     <!-- SearchBox -->
-    <shared-search-box
-      (onValue)="searchBy($event)"
-      placeholder="Buscar por país">
-    </shared-search-box>
+    <button
+      *ngFor="let region of regions"
+      (click) = "searchByRegion(region)"
+      class="btn rounded-pill"
+      [ngClass]="{ 'btn-primary': selectedRegion === region }">
+      {{ region }}
+    </button>
   </div>
 </div>
 

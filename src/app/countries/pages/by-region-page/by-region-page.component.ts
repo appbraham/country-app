@@ -1,31 +1,32 @@
-import { Component, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Country } from '../../interfaces/country.interface';
 import { CountriesService } from '../../services/countries.service';
-import { typeZone } from '../../services/zone.enum';
+import { Region } from '../../interfaces/region.type';
 
 @Component({
   selector: 'app-by-region-page',
   templateUrl: './by-region-page.component.html',
   styles: ``
 })
-export class ByRegionPageComponent {
+export class ByRegionPageComponent implements OnInit{
 
-  @Input()
+
   public countries:Country[] = [];
+  public regions: Region[] = ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania'];
+  public selectedRegion?: Region;
 
   constructor( private countriesService:CountriesService ){}
 
-  searchByRegion( term: string){
-    this.countriesService.searchRegion( term )
+  ngOnInit(): void {
+    this.countries = this.countriesService.cacheStore.byRegion.countries;
+    this.selectedRegion = this.countriesService.cacheStore.byRegion.region;
+  }
+
+  searchByRegion( region: Region){
+
+    this.selectedRegion = region;
+
+    this.countriesService.searchRegion( region )
       .subscribe( countries => this.countries = countries );
   }
-
-  searchBy( term: string){
-    this.countriesService.searchBy( term, typeZone.region)
-      .subscribe( countries => {this.countries = countries; console.log('country page:', typeZone.country);
-      });
-  }
-
-
-
 }
